@@ -13,7 +13,10 @@ export default async function Transactions() {
         <AddUpsetTransactionButton />
       </div>
 
-      <DataTable columns={transactionsColumns} data={transactions} />
+      <DataTable
+        columns={transactionsColumns}
+        data={JSON.parse(JSON.stringify(transactions))}
+      />
     </div>
   );
 }

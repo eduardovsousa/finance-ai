@@ -1,16 +1,24 @@
 import { db } from "@/app/_lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import { TransactionType } from "@prisma/client";
-import { TransactionPercentagePerType } from "./types";
+import { TotalExpensePerCategory, TransactionPercentagePerType } from "./types";
 
 export const getDashboard = async (month: string) => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
   const where = {
+    userId,
     date: {
       gte: new Date(`2024-${month}-01`),
       lt: new Date(`2024-${month}-31`),
     },
   };
 
-  const depositTotal = Number(
+  const depositsTotal = Number(
     (
       await db.transaction.aggregate({
         where: { ...where, type: "DEPOSIT" },
@@ -37,7 +45,7 @@ export const getDashboard = async (month: string) => {
     )?._sum?.amount,
   );
 
-  const balance = depositTotal - investmentsTotal - expensesTotal;
+  const balance = depositsTotal - investmentsTotal - expensesTotal;
 
   const transactionsTotal = Number(
     (
@@ -48,23 +56,43 @@ export const getDashboard = async (month: string) => {
     )._sum.amount,
   );
 
-  const typePercentage: TransactionPercentagePerType = {
+  const typesPercentage: TransactionPercentagePerType = {
     [TransactionType.DEPOSIT]: Math.round(
-      (Number(depositTotal || 0) / Number(transactionsTotal)) * 100,
+      (Number(depositsTotal || 0) / Number(transactionsTotal)) * 100,
     ),
     [TransactionType.EXPENSE]: Math.round(
-      (Number(depositTotal || 0) / Number(transactionsTotal)) * 100,
+      (Number(expensesTotal || 0) / Number(transactionsTotal)) * 100,
     ),
     [TransactionType.INVESTMENT]: Math.round(
-      (Number(depositTotal || 0) / Number(transactionsTotal)) * 100,
+      (Number(investmentsTotal || 0) / Number(transactionsTotal)) * 100,
     ),
   };
 
+  const totalExpensePerCategory: TotalExpensePerCategory[] = (
+    await db.transaction.groupBy({
+      by: ["category"],
+      where: {
+        ...where,
+        type: TransactionType.EXPENSE,
+      },
+      _sum: {
+        amount: true,
+      },
+    })
+  ).map((category) => ({
+    category: category.category,
+    totalAmount: Number(category._sum.amount),
+    percentageOfTotal: Math.round(
+      (Number(category._sum.amount) / Number(expensesTotal)) * 100,
+    ),
+  }));
+
   return {
     balance,
-    depositTotal,
+    depositsTotal,
     investmentsTotal,
     expensesTotal,
-    typePercentage,
+    typesPercentage,
+    totalExpensePerCategory,
   };
 };

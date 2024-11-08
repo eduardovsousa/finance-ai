@@ -31,13 +31,13 @@ const chartConfig = {
 
 interface TransactionPieChatProps {
   typesPercentage: TransactionPercentagePerType;
-  depositTotal: number;
+  depositsTotal: number;
   investmentsTotal: number;
   expensesTotal: number;
 }
 
 export function TransactionPieChart({
-  depositTotal,
+  depositsTotal,
   expensesTotal,
   investmentsTotal,
   typesPercentage,
@@ -45,7 +45,7 @@ export function TransactionPieChart({
   const chartData = [
     {
       type: TransactionType.DEPOSIT,
-      amount: depositTotal,
+      amount: depositsTotal,
       fill: "#55B02E",
     },
     {

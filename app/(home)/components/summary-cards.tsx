@@ -9,14 +9,14 @@ import SummaryCard from "./summary-card";
 interface SummaryCardsProps {
   month: string;
   balance: number;
-  depositTotal: number;
+  depositsTotal: number;
   investmentsTotal: number;
   expensesTotal: number;
 }
 
 export default async function SummaryCards({
   balance,
-  depositTotal,
+  depositsTotal,
   investmentsTotal,
   expensesTotal,
 }: SummaryCardsProps) {
@@ -38,7 +38,7 @@ export default async function SummaryCards({
         <SummaryCard
           icon={<TrendingUpIcon size={16} className="text-primary" />}
           title="Receita"
-          amount={depositTotal}
+          amount={depositsTotal}
         />
         <SummaryCard
           icon={<TrendingDownIcon size={16} className="text-danger" />}

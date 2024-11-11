@@ -13,15 +13,20 @@ import {
 } from "@/app/_components/ui/dialog";
 import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { BotIcon, Loader2Icon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import Markdown from "react-markdown";
 import { generateAiReport } from "../_actions/generate-ai-report";
 
 interface AiReportButtonProps {
+  hasPremiumPlan: boolean;
   month: string;
 }
 
-export default function AiReportButton({ month }: AiReportButtonProps) {
+export default function AiReportButton({
+  month,
+  hasPremiumPlan,
+}: AiReportButtonProps) {
   const [report, setReport] = useState<string | null>();
   const [reportIsLoading, setReportIsLoading] = useState(false);
 
@@ -29,6 +34,18 @@ export default function AiReportButton({ month }: AiReportButtonProps) {
     try {
       setReportIsLoading(true);
       const aiReport = await generateAiReport({ month });
+      setReport(aiReport);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setReportIsLoading(false);
+    }
+  };
+
+  const handleGenerateFakeReportsClick = async () => {
+    try {
+      setReportIsLoading(true);
+      const aiReport = await generateAiReport({ month, example: true });
       setReport(aiReport);
     } catch (error) {
       console.error(error);
@@ -45,30 +62,64 @@ export default function AiReportButton({ month }: AiReportButtonProps) {
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle>Relatório IA</DialogTitle>
-          <DialogDescription>
-            Use inteligência artificial para gerar um relatório com insights
-            sobre suas finanças
-          </DialogDescription>
-        </DialogHeader>
+        {hasPremiumPlan ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>Relatório IA</DialogTitle>
+              <DialogDescription>
+                Use inteligência artificial para gerar um relatório com insights
+                sobre suas finanças
+              </DialogDescription>
+            </DialogHeader>
 
-        <ScrollArea className="prose max-h-[450px] text-white prose-h3:text-white prose-h4:text-white prose-strong:text-white">
-          <Markdown>{report}</Markdown>
-        </ScrollArea>
+            <ScrollArea className="prose max-h-[450px] text-white prose-h3:text-white prose-h4:text-white prose-strong:text-white">
+              <Markdown>{report}</Markdown>
+            </ScrollArea>
 
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="ghost">Cancelar</Button>
-          </DialogClose>
-          <Button
-            onClick={handleGenerateReportsClick}
-            disabled={reportIsLoading}
-          >
-            {reportIsLoading && <Loader2Icon className="animate-spin" />}
-            Gerar relatório
-          </Button>
-        </DialogFooter>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="ghost">Cancelar</Button>
+              </DialogClose>
+              <Button
+                onClick={handleGenerateReportsClick}
+                disabled={reportIsLoading}
+              >
+                {reportIsLoading && <Loader2Icon className="animate-spin" />}
+                Gerar relatório
+              </Button>
+            </DialogFooter>
+          </>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>Relatório IA</DialogTitle>
+              <DialogDescription>
+                Você precisa de um plano premium para gerar relatórios com IA.
+              </DialogDescription>
+            </DialogHeader>
+
+            <ScrollArea className="prose max-h-[450px] text-white prose-h3:text-white prose-h4:text-white prose-strong:text-white">
+              <Markdown>{report}</Markdown>
+            </ScrollArea>
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="ghost">Cancelar</Button>
+              </DialogClose>
+              <Button
+                onClick={handleGenerateFakeReportsClick}
+                disabled={reportIsLoading}
+                variant="link"
+              >
+                {reportIsLoading && <Loader2Icon className="animate-spin" />}
+                Exemplo de relatório
+              </Button>
+              <Button asChild>
+                <Link href="/subscription">Assinar plano premium</Link>
+              </Button>
+            </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

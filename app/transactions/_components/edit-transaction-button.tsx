@@ -28,10 +28,7 @@ export default function EditTransactionButton({
       <UpsertTransactionDialog
         isOpen={dialogIsOpen}
         setIsOpen={setDialogIsOpen}
-        defaultValues={{
-          ...transaction,
-          amount: Number(transaction.amount),
-        }}
+        defaultValues={JSON.parse(JSON.stringify(transaction))}
         transactionId={transaction.id}
       />
     </>

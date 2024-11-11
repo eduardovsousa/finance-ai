@@ -32,7 +32,7 @@ export default function AcquirePlanButton() {
 
   if (hasPremiumPlan) {
     return (
-      <Button variant="link" className="w-full rounded-full font-bold">
+      <Button variant="link" className="w-full rounded-full">
         <Link
           href={`${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL as string}?prefilled_email=${user.emailAddresses[0].emailAddress}`} //necessário pegar o link no stripe
         >
@@ -43,10 +43,7 @@ export default function AcquirePlanButton() {
   }
 
   return (
-    <Button
-      onClick={handleAcquirePlanClick}
-      className="w-full rounded-full font-bold"
-    >
+    <Button onClick={handleAcquirePlanClick} className="w-full rounded-full">
       Adquirir plano
     </Button>
   );

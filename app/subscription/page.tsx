@@ -29,7 +29,7 @@ export default async function Subscription() {
           <Card className="w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
               {!hasPremiumPlan && (
-                <Badge className="absolute left-4 top-11 rounded-full bg-primary/[8%] text-primary">
+                <Badge className="absolute left-4 top-11 cursor-default rounded-full bg-primary/[8%] text-primary">
                   Ativo
                 </Badge>
               )}
@@ -59,7 +59,7 @@ export default async function Subscription() {
           <Card className="w-[450px]">
             <CardHeader className="relative border-b border-solid py-8">
               {hasPremiumPlan && (
-                <Badge className="absolute left-4 top-11 rounded-full bg-primary/[8%] text-primary">
+                <Badge className="absolute left-4 top-11 cursor-default rounded-full bg-primary/[8%] text-primary">
                   Ativo
                 </Badge>
               )}

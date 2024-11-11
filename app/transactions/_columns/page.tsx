@@ -11,7 +11,7 @@ import { TrashIcon } from "lucide-react";
 import EditTransactionButton from "../_components/edit-transaction-button";
 import TransactionTypeBadge from "../_components/type-badge";
 
-export const transactionsColumns: ColumnDef<Transaction>[] = [
+export const transactionColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "name",
     header: "Nome",

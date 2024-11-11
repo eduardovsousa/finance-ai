@@ -6,7 +6,7 @@ import { DataTable } from "../_components/ui/data-table";
 import { ScrollArea } from "../_components/ui/scroll-area";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import { db } from "../_lib/prisma";
-import { transactionsColumns } from "./_columns/page";
+import { transactionColumns } from "./_columns/page";
 
 export default async function Transactions() {
   const { userId } = await auth();
@@ -32,7 +32,7 @@ export default async function Transactions() {
 
         <ScrollArea>
           <DataTable
-            columns={transactionsColumns}
+            columns={transactionColumns}
             data={JSON.parse(JSON.stringify(transactions))}
           />
         </ScrollArea>

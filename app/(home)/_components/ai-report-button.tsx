@@ -29,6 +29,7 @@ export default function AiReportButton({
 }: AiReportButtonProps) {
   const [report, setReport] = useState<string | null>();
   const [reportIsLoading, setReportIsLoading] = useState(false);
+  const [reportFakeButton, setReportFakeButton] = useState(false);
 
   const handleGenerateReportsClick = async () => {
     try {
@@ -45,6 +46,7 @@ export default function AiReportButton({
   const handleGenerateFakeReportsClick = async () => {
     try {
       setReportIsLoading(true);
+      setReportFakeButton(true);
       const aiReport = await generateAiReport({ month, example: true });
       setReport(aiReport);
     } catch (error) {
@@ -108,7 +110,7 @@ export default function AiReportButton({
               </DialogClose>
               <Button
                 onClick={handleGenerateFakeReportsClick}
-                disabled={reportIsLoading}
+                disabled={reportIsLoading || !!reportFakeButton}
                 variant="link"
               >
                 {reportIsLoading && <Loader2Icon className="animate-spin" />}
